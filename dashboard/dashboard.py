@@ -52,28 +52,17 @@ st.pyplot(fig)
 # Menampilkan jam dengan konsentrasi O3 tertinggi
 st.metric(f"Jam dengan Konsentrasi O3 Tertinggi", value=f"{int(o3_max_hour['hour'])}:00", delta=f"{o3_max_hour['O3']:.2f} µg/m³")
 
-# Analisis Bulan dengan Total Hujan Tertinggi
-st.subheader('Apa bulan dengan jumlah total hujan tertinggi di Guanyuan selama periode yang dianalisis?')
-monthly_rainfall = main_df.groupby(['year', 'month'])['RAIN'].sum().reset_index()  # Pastikan menggunakan RAIN
-monthly_rainfall['datetime'] = pd.to_datetime(monthly_rainfall[['year', 'month']].assign(day=1))
-monthly_rainfall.sort_values(by='RAIN', ascending=False, inplace=True)  # Pastikan menggunakan RAIN
-max_rainfall_month = monthly_rainfall.iloc[0]
+# Grouping and summing rainfall data by month
+rain_by_month = main_df.groupby('month')['RAIN'].sum().reset_index()
 
-# Plot data hujan berdasarkan bulan
-fig, ax = plt.subplots(figsize=(16, 8))
-ax.plot(
-    monthly_rainfall["datetime"],
-    monthly_rainfall["RAIN"],  # Pastikan menggunakan RAIN
-    marker='o',
-    linewidth=2,
-    color="#4FC3F7"
-)
-ax.set_title('Total Hujan per Bulan', fontsize=20)
-ax.set_ylabel('Total Hujan (mm)', fontsize=15)
+# Creating the bar plot for rainfall per month
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.barplot(x="month", y="RAIN", data=rain_by_month, palette="Blues", ax=ax)
+ax.set_title('Total Curah Hujan per Bulan', fontsize=20)
+ax.set_ylabel('Total Curah Hujan (mm)', fontsize=15)
 ax.set_xlabel('Bulan', fontsize=15)
 ax.tick_params(axis='y', labelsize=12)
 ax.tick_params(axis='x', labelsize=12)
-st.pyplot(fig)
 
-# Menampilkan bulan dengan total hujan tertinggi
-st.metric(f"Bulan dengan Total Hujan Tertinggi", value=f"{max_rainfall_month['month']}-{int(max_rainfall_month['year'])}", delta=f"{max_rainfall_month['RAIN']:.2f} mm")  # Pastikan menggunakan RAIN
+# Displaying the plot in Streamlit
+st.pyplot(fig)
