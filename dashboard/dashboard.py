@@ -56,6 +56,9 @@ st.metric(f"Jam dengan Konsentrasi O3 Tertinggi", value=f"{int(o3_max_hour['hour
 rain_by_month = main_df.groupby('month')['RAIN'].sum().reset_index()
 
 # Mencari bulan dengan curah hujan tertinggi
+max_rainfall_month = rain_by_month.loc[rain_by_month['RAIN'].idxmax()]
+
+# Membuat plot batang untuk curah hujan per bulan
 fig, ax = plt.subplots(figsize=(10, 6))
 sns.barplot(x="month", y="RAIN", data=rain_by_month, palette="Blues", ax=ax)
 ax.set_title('Total Curah Hujan per Bulan', fontsize=20)
@@ -68,4 +71,10 @@ ax.tick_params(axis='x', labelsize=12)
 st.pyplot(fig)
 
 # Menampilkan bulan dengan curah hujan tertinggi
-st.metric(f"Bulan dengan Curah Hujan Tertinggi", value=f"Bulan {int(max_rainfall_month['month'])}", delta=f"{max_rainfall_month['RAIN']:.2f} mm")
+st.metric(
+    label="Bulan dengan Curah Hujan Tertinggi", 
+    value=f"Bulan {int(max_rainfall_month['month'])}", 
+    delta=f"{max_rainfall_month['RAIN']:.2f} mm"
+)
+
+
